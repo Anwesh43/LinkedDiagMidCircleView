@@ -194,4 +194,26 @@ class DiagMidCircleView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : DiagMidCircleView) {
+
+        private val dmc : DiagMidCircle = DiagMidCircle(0)
+        private val animator : Animator = Animator(this)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            dmc.draw(canvas, paint)
+            animator.animate {
+                dmc.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            dmc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }

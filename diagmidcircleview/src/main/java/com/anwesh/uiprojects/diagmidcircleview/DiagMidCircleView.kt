@@ -20,6 +20,7 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#673AB7")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val angleDeg : Float = 90f
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -31,3 +32,32 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
 }
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
 
+fun Canvas.drawDiagLine(size : Float, sc : Float, paint : Paint) {
+    val x : Float = size * Math.cos((angleDeg / 2) * Math.PI / 180).toFloat()
+    val y : Float = size * Math.sin((angleDeg / 2) * Math.PI / 180).toFloat()
+    drawLine(x - x * sc, y -  y * sc, x, y, paint)
+}
+
+fun Canvas.drawDMCNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = h / (nodes + 1)
+    val size : Float = gap / sizeFactor
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.style = Paint.Style.STROKE
+    save()
+    translate(w / 2, gap * (i + 1))
+    rotate(angleDeg * sc2)
+    drawCircle(0f, 0f, size, paint)
+    for (j in 0..(lines - 1)) {
+        save()
+        rotate(angleDeg * j)
+        drawDiagLine(size, sc1.divideScale(j, lines), paint)
+        restore()
+    }
+    restore()
+}

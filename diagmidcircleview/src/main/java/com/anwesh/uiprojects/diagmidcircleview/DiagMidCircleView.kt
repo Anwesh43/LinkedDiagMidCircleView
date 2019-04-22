@@ -217,4 +217,13 @@ class DiagMidCircleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : DiagMidCircleView {
+            val view : DiagMidCircleView = DiagMidCircleView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
